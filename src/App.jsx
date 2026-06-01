@@ -520,12 +520,11 @@ Some of My Skills</h2>
 
     {/* DESCRIPTION */}
     <p className="text-gray-400 mt-6 text-lg leading-8">
-      Whether you need a modern website, a fast web app, or a complete design system,
-      I can help you plan, build, and launch it efficiently and at scale.
+   Whether you need a modern mobile application, a cross-platform Flutter app, or a complete product from concept to deployment, I can help you build, optimize, and launch it with performance, scalability, and user experience in mind.
     </p>
 
     {/* BUTTON */}
-    <div className="mt-10 flex justify-center">
+   {/* <div className="mt-10 flex justify-center">
      <a
   href="https://wa.me/201023225772"
   target="_blank"
@@ -544,7 +543,7 @@ Some of My Skills</h2>
 >
   Get in Touch
 </a>
-    </div>
+    </div> */}
 
   </div>
 </motion.section>
