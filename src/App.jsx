@@ -552,32 +552,58 @@ const skills = [
         )}
       </AnimatePresence>   
 <FloatingDock scrolled={scrolled} />
-
 <AnimatePresence>
   {scrolled && (
     <motion.button
       initial={{ opacity: 0, y: 20 }}
-      animate={{ 
-        opacity: 1, 
-        y: [0, -10, 0] 
-      }}
+      animate={{ opacity: 1, y: [0, -10, 0] }}
       transition={{ 
         y: { repeat: Infinity, duration: 2, ease: "easeInOut" },
         opacity: { duration: 0.3 }
       }}
       exit={{ opacity: 0, y: 20 }}
-      whileHover={{ scale: 1.1 }} 
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="group fixed bottom-8 right-8 z-[100] flex items-center gap-2 p-4 bg-cyan-400 text-black rounded-full shadow-lg hover:bg-cyan-300 transition-colors"
+      // التعديلات هنا:
+      // bottom-36 عشان يفضل فوق الـ Dock في الموبايل
+      // md:bottom-8 يرجعه لمكانه الأصلي في الشاشات الكبيرة
+      // z-[10000] عشان يضمن إنه يظهر فوق الـ Dock دائماً
+      className="group fixed bottom-36 right-4 md:bottom-8 md:right-8 z-[10000] flex items-center justify-center p-3 bg-cyan-400 text-black rounded-full shadow-lg hover:bg-cyan-300 transition-all duration-300 overflow-hidden"
     >
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
       </svg>
-    
-      <span className="hidden group-hover:block font-bold text-sm whitespace-nowrap pr-2">
+      
+      {/* النص هنا بيظهر في كل الأحجام عند الـ Hover */}
+      <span className="max-w-0 opacity-0 group-hover:max-w-[150px] group-hover:opacity-100 transition-all duration-300 ease-in-out font-bold text-sm whitespace-nowrap pl-0 group-hover:pl-2 overflow-hidden">
         Back to Top
       </span>
     </motion.button>
+  )}
+</AnimatePresence>
+
+{/* Toast Component */}
+<AnimatePresence>
+  {toast.show && (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 50 }}
+      className={`fixed z-[99999] p-4 rounded-xl shadow-2xl flex items-center justify-between border
+        ${toast.type === 'success' 
+          ? 'bg-black/80 backdrop-blur-md border-green-500/50 text-white' 
+          : 'bg-black/80 backdrop-blur-md border-red-500/50 text-white'}
+        /* التنسيق الـ Responsive هنا: */
+        bottom-24 left-4 right-4 md:bottom-8 md:right-8 md:left-auto md:w-[350px]
+      `}
+    >
+      <p className="text-sm font-medium">{toast.message}</p>
+      <button 
+        onClick={() => setToast({ ...toast, show: false })} 
+        className="ml-4 text-gray-400 hover:text-white"
+      >
+        ✕
+      </button>
+    </motion.div>
   )}
 </AnimatePresence>
 
@@ -587,7 +613,7 @@ const skills = [
 
 const FloatingDock = ({ scrolled }) => {
   const items = [
-    { title: "View CV", href: "/Sherif Amr_CV.pdf", icon: <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/> },
+    { title: "View CV", href:"/Sherif Amr CV.pdf", icon: <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/> },
     { isDivider: true },
     { title: "About", href: "#about", icon: <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/> },
     { title: "Education", href: "#education", icon: <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm0 2.5l6 3.27-6 3.27-6-3.27 6-3.27z"/> },
@@ -604,50 +630,54 @@ const FloatingDock = ({ scrolled }) => {
   return (
     <AnimatePresence>
       {scrolled && (
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 100 }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          className="fixed bottom-6 left-0 right-0 flex justify-center z-[9999] pointer-events-none"
+<motion.div
+  initial={{ opacity: 0, y: 100 }}
+  animate={{ opacity: 1, y: 0 }}
+  exit={{ opacity: 0, y: 100 }}
+  transition={{ type: "spring", stiffness: 200, damping: 20 }}
+  className="fixed bottom-6 left-0 right-0 flex justify-center z-[9999] pointer-events-none px-2"
+>
+  {/* هنا التعديل: شيلنا overflow-x-auto واستخدمنا flex-wrap */}
+  <div className="pointer-events-auto flex flex-wrap items-center justify-center gap-2 p-2 rounded-2xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] w-fit max-w-[95vw]">
+    {items.map((item, index) =>
+      item.isDivider ? (
+        <div key={index} className="w-[1px] h-8 bg-white/10 mx-1 shrink-0" />
+      ) : (
+        <motion.a
+          key={index}
+          href={item.href}
+          target={item.href.startsWith("#") ? "_self" : "_blank"}
+          rel="noopener noreferrer"
+          whileHover={{ y: -8, scale: 1.1 }}
+          className={`relative group w-12 h-12 flex items-center justify-center rounded-xl bg-white/5 transition-colors duration-300
+            ${item.title === "LinkedIn" ? "text-gray-400 hover:text-blue-600" : 
+              item.title === "WhatsApp" ? "text-gray-400 hover:text-[#25D366]" : 
+              item.title === "Gmail" ? "text-gray-400 hover:text-red-600" : 
+              item.title === "GitHub" ? "text-gray-400 hover:text-white" : 
+              item.title === "Contact" ? "text-cyan-400 hover:text-white" :
+              "text-gray-400 hover:text-cyan-400"}
+          `}
         >
-          <div className="pointer-events-auto flex items-center justify-center gap-3 p-3 rounded-2xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
-            {items.map((item, index) =>
-              item.isDivider ? (
-                <div key={index} className="w-[1px] h-8 bg-white/10 mx-1" />
-              ) : (
-                <motion.a
-                  key={index}
-                  href={item.href}
-                  target={item.href.startsWith("#") ? "_self" : "_blank"}
-                  rel="noopener noreferrer"
-                  whileHover={{ y: -8, scale: 1.1 }}
-                  className={`relative group w-12 h-12 flex items-center justify-center rounded-xl bg-white/5 transition-colors duration-300
-                    ${item.title === "LinkedIn" ? "text-gray-400 hover:text-blue-600" : 
-                      item.title === "WhatsApp" ? "text-gray-400 hover:text-[#25D366]" : 
-                      item.title === "Gmail" ? "text-gray-400 hover:text-red-600" : 
-                      item.title === "GitHub" ? "text-gray-400 hover:text-white" : 
-                      "text-gray-400 hover:text-cyan-400"}
-                  `}
-                >
-                  <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                    {item.icon}
-                  </svg>
-<span className={`absolute -top-14 left-1/2 -translate-x-1/2 scale-0 group-hover:scale-100 transition-all duration-200 text-black text-xs font-bold px-3 py-1.5 rounded-lg shadow-xl whitespace-nowrap pointer-events-none
-  ${item.title === "LinkedIn" ? "bg-blue-600" : 
-    item.title === "WhatsApp" ? "bg-[#25D366]" : 
-    item.title === "Gmail" ? "bg-red-600" : 
-    item.title === "GitHub" ? "bg-gray-400" : 
-    "bg-cyan-400"}
-`}>
-
-  {item.title}
-</span>
-                </motion.a>
-              )
-            )}
-          </div>
-        </motion.div>
+          <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+            {item.icon}
+          </svg>
+          
+          {/* الـ Tooltip: غيرنا الـ top عشان متتحشرش في حاجة */}
+          <span className={`absolute -top-12 scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-200 text-black text-xs font-bold px-3 py-1.5 rounded-lg shadow-xl whitespace-nowrap pointer-events-none z-[100]
+            ${item.title === "LinkedIn" ? "bg-blue-600" : 
+              item.title === "WhatsApp" ? "bg-[#25D366]" : 
+              item.title === "Gmail" ? "bg-red-600" : 
+              item.title === "GitHub" ? "bg-gray-400" : 
+              "bg-cyan-400"}
+          `}>
+            {item.title}
+          </span>
+        </motion.a>
+      )
+    )}
+  </div>
+</motion.div>
+        
       )}
     </AnimatePresence>
 
