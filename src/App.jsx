@@ -200,7 +200,7 @@ const skills = [
             </p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
               <a href="#projects" className="px-8 py-4 bg-cyan-400 text-black font-semibold rounded-2xl hover:scale-105 transition">View Projects</a>
-              <a href="/Sherif Amr CV.pdf" className="px-8 py-4 border border-white/20 rounded-2xl hover:border-cyan-400 transition">View CV</a>
+              <a href="Sherif Amr CV.pdf" className="px-8 py-4 border border-white/20 rounded-2xl hover:border-cyan-400 transition">View CV</a>
               <a href="#contact" className="px-8 py-4 bg-white/5 rounded-2xl hover:bg-white/10">Contact</a>
             </div>
 
